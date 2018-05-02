@@ -7,7 +7,7 @@ DROP TABLE contract;
 DROP TABLE tenancy_contract;
 DROP TABLE purchase_contract;
 
-CREATE TABLE estate (ID int NOT NULL,
+CREATE TABLE estate (ID int NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
                      City VARCHAR(50) NOT NULL,
                      Postal_Code VARCHAR(50) NOT NULL,
                      Street VARCHAR(50) NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE estate (ID int NOT NULL,
                      PRIMARY KEY (ID));
 
 
-CREATE TABLE estate_agent (ID int NOT NULL,
+CREATE TABLE estate_agent (ID int NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
                            Name VARCHAR(50) NOT NULL,
                            Address VARCHAR(50) NOT NULL,
                            Login VARCHAR(50) NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE estate_agent (ID int NOT NULL,
 
 CREATE TABLE apartment (ESTATE_ID int NOT NULL,
                         Floor int NOT NULL,
-                        Rent DOUBLE NOT NULL,
+                        Rent double NOT NULL,
                         Rooms int NOT NULL,
                         Balcony char(1) NOT NULL,
                         Built_in_Kitchen char(1) NOT NULL,
@@ -106,8 +106,8 @@ ALTER TABLE purchase_contract
 FOREIGN KEY (House_ID) REFERENCES house(ESTATE_ID);
 
 
-INSERT INTO estate_agent (ID, NAME, ADDRESS, LOGIN, PASSWORD)
-VALUES (1,
+INSERT INTO estate_agent (NAME, ADDRESS, LOGIN, PASSWORD)
+VALUES (
         'Mustermann',
         'Musterstraße',
         'mmuster',
@@ -142,3 +142,6 @@ VALUES (1,
         'Y',
         'N',
         NULL);
+
+--Select * from apartment;
+SELECT * FROM estate;

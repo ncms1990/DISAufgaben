@@ -25,8 +25,8 @@
                         <Label layoutX="405.0" layoutY="73.0" text="User" />
                         <TextField fx:id="fxAgentUserName" layoutX="381.0" layoutY="98.0" />
                         <Label layoutX="386.0" layoutY="136.0" text="Password (HARDCODED)" />
-                        <TextField layoutX="382.0" layoutY="162.0" />
-                        <Button fx:id="logUName" layoutX="435.0" layoutY="211.0" mnemonicParsing="false" onAction="#loginUsername" text="Enter" />
+                        <TextField fx:id="fxAgentLogin" layoutX="382.0" layoutY="162.0" />
+                        <Button fx:id="logUName" layoutX="435.0" layoutY="211.0" mnemonicParsing="false" onAction="#fxLoginUsername" text="Enter" />
                      </children>
                   </VBox>
                   <TableView fx:id="fxEstateAgentsAccounts" editable="true" layoutX="233.0" layoutY="30.0" prefHeight="200.0" prefWidth="332.0">
@@ -37,10 +37,10 @@
                         <TableColumn fx:id="fxColPassword" prefWidth="97.0" text="Password" />
                     </columns>
                   </TableView>
-                  <Button fx:id="deleteAcc" layoutX="247.0" layoutY="268.0" mnemonicParsing="false" onAction="#deleteAcc" text="Delete" />
-                  <Button fx:id="modifyAcc" layoutX="319.0" layoutY="268.0" mnemonicParsing="false" onAction="#modifyAcc" text="Modify" />
-                  <Button fx:id="refreshAccs" layoutX="399.0" layoutY="268.0" mnemonicParsing="false" onAction="#refreshAccs" text="Refresh" />
-                  <Button fx:id="addAcc" layoutX="486.0" layoutY="268.0" mnemonicParsing="false" onAction="#addAccount" text="Add" />
+                  <Button fx:id="deleteAcc" layoutX="247.0" layoutY="268.0" mnemonicParsing="false" onAction="#fxDeleteAcc" text="Delete" />
+                  <Button fx:id="modifyAcc" layoutX="319.0" layoutY="268.0" mnemonicParsing="false" onAction="#fxModifyAcc" text="Modify" />
+                  <Button fx:id="refreshAccs" layoutX="399.0" layoutY="268.0" mnemonicParsing="false" onAction="#fxRefreshAccs" text="Refresh" />
+                  <Button fx:id="fxAddAcc" layoutX="486.0" layoutY="268.0" mnemonicParsing="false" onAction="#fxAddAccount" text="Add" />
                </children>
             </AnchorPane>
       </content>
@@ -52,21 +52,25 @@
                   <VBox layoutX="21.0" layoutY="24.0" prefHeight="150.0" prefWidth="178.0">
                      <children>
                         <Label layoutX="405.0" layoutY="73.0" text="Agent username:" />
-                        <TextField layoutX="381.0" layoutY="98.0" />
+                        <TextField fx:id="fx2AgentUsername" layoutX="381.0" layoutY="98.0" />
                         <Label layoutX="386.0" layoutY="136.0" text="Password (HARDCODED)" />
-                        <TextField layoutX="382.0" layoutY="162.0" />
-                        <Button layoutX="435.0" layoutY="211.0" mnemonicParsing="false" text="Enter" />
+                        <TextField fx:id="fx2AgentPassword" layoutX="382.0" layoutY="162.0" />
+                        <Button fx:id="fx2Enter" layoutX="435.0" layoutY="211.0" mnemonicParsing="false" onAction="#fx2LoginEstateAgent" text="Enter" />
                      </children>
                   </VBox>
-                  <TableView layoutX="239.0" layoutY="24.0" prefHeight="193.0" prefWidth="326.0">
+                  <TableView fx:id="fx2Estates" layoutX="239.0" layoutY="24.0" prefHeight="193.0" prefWidth="326.0">
                     <columns>
-                      <TableColumn prefWidth="75.0" text="C1" />
-                      <TableColumn prefWidth="75.0" text="C2" />
+                      <TableColumn fx:id="fx2City" prefWidth="49.0" text="City" />
+                      <TableColumn fx:id="fx2PostalCode" prefWidth="71.0" text="Postal code" />
+                        <TableColumn fx:id="fx2Street" prefWidth="59.0" text="Street" />
+                        <TableColumn fx:id="fx2StreetNum" prefWidth="87.0" text="Street number" />
+                        <TableColumn fx:id="fx2SquareArea" prefWidth="136.0" text="Square area" />
                     </columns>
                   </TableView>
-                  <Button layoutX="368.0" layoutY="250.0" mnemonicParsing="false" text="Refresh" />
-                  <Button layoutX="472.0" layoutY="250.0" mnemonicParsing="false" text="Update" />
-                  <Button layoutX="278.0" layoutY="250.0" mnemonicParsing="false" text="Delete" />
+                  <Button fx:id="fx2Refresh" layoutX="325.0" layoutY="250.0" mnemonicParsing="false" onAction="#fx2RefreshEstates" text="Refresh" />
+                  <Button fx:id="fx2Update" layoutX="414.0" layoutY="250.0" mnemonicParsing="false" onAction="#fx2UpdateEstate" text="Update" />
+                  <Button fx:id="fx2Delete" layoutX="239.0" layoutY="250.0" mnemonicParsing="false" onAction="#fx2DeleteEstate" text="Delete" />
+                  <Button fx:id="fx2Add" layoutX="503.0" layoutY="250.0" mnemonicParsing="false" onAction="#fx2AddEstate" text="Add" />
                </children></AnchorPane>
       </content>
     </TitledPane>

@@ -19,10 +19,11 @@ import java.util.List;
 
 public class GUITools {
 
-    public static boolean initWindowNewEntry(Stage pStage, List res) {
-        WindowAddNewEntry w = new WindowAddNewEntry(pStage, res);
+    public static boolean initWindowNewEntry(Stage pStage, List res, List defaultTextfields) {
+        WindowAddNewEntry w = new WindowAddNewEntry(pStage, res, defaultTextfields);
         return w.somethingChanged();
     }
+
 
     /*
      * Window is a showAndWait Window. To be used with lambda expr or anony classes.
@@ -30,13 +31,16 @@ public class GUITools {
     static class WindowAddNewEntry {
 
         private boolean modified = false;
+        private boolean modifyEntryState;
         public boolean somethingChanged(){return modified;}
 
         /*
         * Note: List<String> has the labels and is used as answer if button is pressed.
         * */
-        public WindowAddNewEntry(final Stage primaryStage, List<String> responses) {
+        public WindowAddNewEntry(final Stage primaryStage, List<String> responses, List<String> defaultEntries) {
             // New window (Stage)
+            //There are two stages: Either modifyEntryState or addEntryState.
+            modifyEntryState = ! defaultEntries.isEmpty();
             Stage newWindow = new Stage();
 
             Label introLabel = new Label("Add or Modify data:");
@@ -47,6 +51,13 @@ public class GUITools {
                 textFields[i]= new TextField();
             }
 //            TextField textField1 = new TextField();
+            //If default entries is not empty, then its intended to modify (update) an entry. Which means,
+            //insert default text to each entry
+            if (modifyEntryState){
+                for (int i = 0; i< defaultEntries.size(); i++){
+                    textFields[i].setText(defaultEntries.get(i));
+                }
+            }
             Button but = new Button("Add/Modify");
             but.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
                         @Override
@@ -66,7 +77,7 @@ public class GUITools {
             }
             layout.getChildren().add(but);
 
-            Scene scene = new Scene(layout, 230, 100);
+            Scene scene = new Scene(layout, 230, 100 * responses.size());
 
             newWindow.setTitle("Modify");
             newWindow.setScene(scene);

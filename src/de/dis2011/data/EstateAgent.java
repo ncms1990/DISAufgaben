@@ -25,6 +25,8 @@ import javafx.beans.property.SimpleStringProperty;
  * Insert into makler(name, address, login, password) values ('Jose A. Ramon', 'Vecindad numero 72', 'donRamon','fueSinQuererQueriendo');
  */
 public class EstateAgent {
+	private static String tableName = "estate_agent";
+
 	private int id = -1;
 	private SimpleStringProperty name = new SimpleStringProperty("");
 	private SimpleStringProperty address = new SimpleStringProperty("");
@@ -86,7 +88,7 @@ public class EstateAgent {
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 			// Erzeuge Anfrage
-			String selectSQL = "SELECT * FROM makler WHERE id = ?";
+			String selectSQL = "SELECT * FROM " + tableName +" WHERE id = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
 			pstmt.setInt(1, id);//Id hardcoded: -1 ... WHY?
 
@@ -123,7 +125,7 @@ public class EstateAgent {
 			if (getId() == -1) {
 				// Achtung, hier wird noch ein Parameter mitgegeben,
 				// damit spC$ter generierte IDs zurC<ckgeliefert werden!
-				String insertSQL = "INSERT INTO makler(name, address, login, password) VALUES (?, ?, ?, ?)";
+				String insertSQL = "INSERT INTO  " + tableName + "(name, address, login, password) VALUES (?, ?, ?, ?)";
 
 				PreparedStatement pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);
@@ -145,7 +147,7 @@ public class EstateAgent {
 				pstmt.close();
 			} else {
 				// Falls schon eine ID vorhanden ist, mache ein Update...
-				String updateSQL = "UPDATE makler SET name = ?, address = ?, login = ?, password = ? WHERE id = ?";
+				String updateSQL = "UPDATE " + tableName + " SET name = ?, address = ?, login = ?, password = ? WHERE id = ?";
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Setze Anfrage Parameter
@@ -163,14 +165,53 @@ public class EstateAgent {
 		}
 	}
 
+	public static EstateAgent createEstateAgent(int id, String name, String address, String username, String password){
+		EstateAgent ea = new EstateAgent();
+		ea.setId(id);
+		ea.setName(name);
+		ea.setAddress(address);
+		ea.setLogin(username);
+		ea.setPassword(password);
+		return ea;
+	}
+
 	public static EstateAgent createEstateAgent(String name, String address, String username, String password){
 	    EstateAgent ea = new EstateAgent();
 	    ea.setName(name);
 	    ea.setAddress(address);
 	    ea.setLogin(username);
 	    ea.setPassword(password);
+	    ea.save();//Needed to generate the Id.
 	    return ea;
     }
+
+    public static boolean checkingEstateAgentUsernamePassword(String username, String password){
+		try {
+			// Hole Verbindung
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+
+			// Erzeuge Anfrage
+			String selectSQL = "SELECT * FROM " + tableName + " WHERE  login='" +
+					username + "' AND password='" + password +"'";
+			System.out.println(selectSQL);
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+
+			// Führe Anfrage aus
+			ResultSet rs = pstmt.executeQuery();
+
+			boolean loggedIn = rs.next();
+
+			//Close all the things!
+			rs.close();
+			pstmt.close();
+			return loggedIn;
+		}
+		catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		return false;
+
+	}
 
     public static void getEstateAgents(List<EstateAgent> eas){
         try {
@@ -178,7 +219,7 @@ public class EstateAgent {
             Connection con = DB2ConnectionManager.getInstance().getConnection();
 
             // Erzeuge Anfrage
-            String selectSQL = "SELECT * FROM makler";
+            String selectSQL = "SELECT * FROM " + tableName;
             PreparedStatement pstmt = con.prepareStatement(selectSQL);
 
             // Führe Anfrage aus
@@ -186,10 +227,11 @@ public class EstateAgent {
 
             while (rs.next()) {
                 EstateAgent estateAgent = EstateAgent.createEstateAgent(
-                        rs.getString("name"),
-                        rs.getString("address"),
-                        rs.getString("login"),
-                        rs.getString("password"));
+                		rs.getInt("id"),
+                        rs.getString("Name"),
+                        rs.getString("Address"),
+                        rs.getString("Login"),
+                        rs.getString("Password"));
                 eas.add(estateAgent);
             }
             //Close all the things!
@@ -207,7 +249,7 @@ public class EstateAgent {
             Connection con = DB2ConnectionManager.getInstance().getConnection();
 
             // Erzeuge Anfrage
-            String deleteSQL = "DELETE FROM makler WHERE id = ?";
+            String deleteSQL = "DELETE FROM "+ tableName + " WHERE id = ?";
             PreparedStatement pstmt = con.prepareStatement(deleteSQL);
             pstmt.setString(1, Integer.toString(ea.getId()));
             // Führe Anfrage aus
