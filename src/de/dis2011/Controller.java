@@ -66,6 +66,8 @@ public class Controller {
     @FXML
     TableColumn fx2SquareArea;
 
+    private int estateAgentIDLoggedIn = -1;
+
 
     /*
     ATTRIBUTES FOR CONTRACT MANAGEMENT
@@ -84,6 +86,14 @@ public class Controller {
         fxColAddress.setCellValueFactory(new PropertyValueFactory<EstateAgent, String>("address"));
         fxColUsername.setCellValueFactory(new PropertyValueFactory<EstateAgent, String>("login"));
         fxColPassword.setCellValueFactory(new PropertyValueFactory<EstateAgent, String>("password"));
+        //INITIALIZE FOR MANAGEMENTE MODE FOR ESTATES
+        fx2City.setCellValueFactory(new PropertyValueFactory<Estate, String>("city"));
+        fx2PostalCode.setCellValueFactory(new PropertyValueFactory<Estate, String>("postalCode"));
+        fx2Street.setCellValueFactory(new PropertyValueFactory<Estate, String>("street"));
+        fx2StreetNum.setCellValueFactory(new PropertyValueFactory<Estate, String>("streetNumber"));
+        fx2SquareArea.setCellValueFactory(new PropertyValueFactory<Estate, String>("squareArea"));
+
+
     }
 
     private Stage getPrimaryStage(){
@@ -95,9 +105,6 @@ public class Controller {
         System.out.println("HELLO THERE! You typed:" + fxAgentUserName.getText() + " and " + fxAgentLogin.getText());
     }
 
-    public void registerUserName(ActionEvent actionEvent) {
-
-    }
 
     public void fxRefreshAccs(ActionEvent actionEvent) {
         fx1RefreshTable();
@@ -113,10 +120,12 @@ public class Controller {
     }
 
     public void fxDeleteAcc(ActionEvent actionEvent) {
-        EstateAgent ea = fxEstateAgentsAccounts.getSelectionModel().getSelectedItem();
-        System.out.println(ea.getId());
-        EstateAgent.delete(ea);
-        fx1RefreshTable();
+        if (!fxEstateAgentsAccounts.getSelectionModel().isEmpty()) {
+            EstateAgent ea = fxEstateAgentsAccounts.getSelectionModel().getSelectedItem();
+            System.out.println(ea.getId());
+            EstateAgent.delete(ea);
+            fx1RefreshTable();
+        }
     }
 
     public void fxModifyAcc(ActionEvent actionEvent) {
@@ -157,60 +166,111 @@ public class Controller {
      *************************************************************
      */
 
+    private boolean checkIfLogedIn() {
+        return estateAgentIDLoggedIn != -1;
+    }
+
     public void fx2LoginEstateAgent(ActionEvent ae){
-        boolean loggedIn = EstateAgent.checkingEstateAgentUsernamePassword(fx2AgentUsername.getText(), fx2AgentPassword.getText());
-        if (loggedIn){System.out.println("YOU LOGGED IN.");}else{System.out.println("WRONG!");}
+        int estateAgentId = EstateAgent.checkingEstateAgentUsernamePassword(fx2AgentUsername.getText(), fx2AgentPassword.getText());
+        if (estateAgentId != -1)
+        {
+            estateAgentIDLoggedIn = estateAgentId;
+            fx2RefreshTable();
+            System.out.println("YOU LOGGED IN.");
+        }
+        else{
+            estateAgentIDLoggedIn = -1;
+            System.out.println("WRONG!");
+        }
 
     }
 
     public void fx2RefreshEstates(ActionEvent ae){
-        fx2RefreshTable();
+        if (checkIfLogedIn()){
+            fx2RefreshTable();
+        }
     }
 
-    public void fx2RefreshTable(){
-        ObservableList<Estate> accs = FXCollections.observableArrayList();
 
-        Estate.getEstates(accs);
-        ObservableList<Estate> estates = fx2Estates.getItems();
-        estates.clear();
-        estates.addAll(accs);
-    }
 
-    public void fx2UpdateEstate(ActionEvent ae){
+    private void fx2RefreshTable(){
+        if (checkIfLogedIn()) {
+            ObservableList<Estate> accs = FXCollections.observableArrayList();
 
+            Estate.getEstates(accs, estateAgentIDLoggedIn);
+            ObservableList<Estate> estates = fx2Estates.getItems();
+            estates.clear();
+            estates.addAll(accs);
+        }
+        else{
+            System.out.println("NEED TO LOG IN.");
+        }
     }
 
     public void fx2DeleteEstate(ActionEvent ae){
-        Estate e = fx2Estates.getSelectionModel().getSelectedItem();
-        System.out.println(e.getId());
-        Estate.delete(e);
-        fx2RefreshTable();
-
-    }
-
-    public void fx2AddEstate(ActionEvent ae){
-
-
-    }
-
-    public void fx2Update(ActionEvent actionEvent) {
-        Estate e = fx2Estates.getSelectionModel().getSelectedItem();
-        Stage pStage = getPrimaryStage();
-        List<String> textFields = new ArrayList<String>(Arrays.asList("Name", "Address", "Username", "Password"));
-        List<String> defaultFields =
-                new ArrayList<String>(Arrays.asList(e.getCity(), e.getPostalCode(), e.getStreet(),
-                        String.valueOf(e.getStreetNumber()), String.valueOf(e.getSquareArea())));
-        boolean newEntry = GUITools.initWindowNewEntry(pStage, textFields, defaultFields);
-        if (newEntry){
-            e.setCity(textFields.get(0));
-            e.setPostalCode(textFields.get(1));
-            e.setStreet(textFields.get(2));
-            e.setStreetNumber(Integer.parseInt(textFields.get(3)));
-            e.setSquareArea(Double.parseDouble(textFields.get(4)));
-            e.save();
+        if (checkIfLogedIn()) {
+            Estate e = fx2Estates.getSelectionModel().getSelectedItem();
+            System.out.println(e.getId());
+            Estate.delete(e);
             fx2RefreshTable();
         }
+        else{
+            System.out.println("NEED TO LOG IN.");
+        }
 
+    }
+
+
+    public void fx2UpdateEstate(ActionEvent actionEvent) {
+        if (checkIfLogedIn()) {
+            Estate e = fx2Estates.getSelectionModel().getSelectedItem();
+            Stage pStage = getPrimaryStage();
+            List<String> textFields = new ArrayList<String>(Arrays.asList("City", "Postal code",
+                    "Street", "Street number", "Square area"));
+            List<String> defaultFields =
+                    new ArrayList<String>(Arrays.asList(e.getCity(), e.getPostalCode(), e.getStreet(),
+                            String.valueOf(e.getStreetNumber()), String.valueOf(e.getSquareArea())));
+            boolean newEntry = GUITools.initWindowNewEntry(pStage, textFields, defaultFields);
+            if (newEntry) {
+                e.setCity(textFields.get(0));
+                e.setPostalCode(textFields.get(1));
+                e.setStreet(textFields.get(2));
+                e.setStreetNumber(Integer.parseInt(textFields.get(3)));
+                e.setSquareArea(Double.parseDouble(textFields.get(4)));
+                e.setEstateAgentID(estateAgentIDLoggedIn);
+                e.save();
+                fx2RefreshTable();
+            }
+        }
+        else{
+            System.out.println("NEED TO LOG IN.");
+        }
+
+    }
+
+    public void fx2AddEstate(ActionEvent actionEvent) {
+        if (checkIfLogedIn()){
+            Estate estate = fx2Estates.getSelectionModel().getSelectedItem();
+            Stage pStage = getPrimaryStage();
+            List<String> textFields = new ArrayList<String>(Arrays.asList("City", "Postal code",
+                    "Street", "Street number", "Square area"));
+            boolean newEntry = GUITools.initWindowNewEntry(pStage, textFields, new ArrayList<Estate>());
+            if (newEntry){
+                Estate newE = Estate.createEstate(
+                        textFields.get(0),
+                        textFields.get(1),
+                        textFields.get(2),
+                        Integer.parseInt(textFields.get(3)),
+                        Double.parseDouble(textFields.get(4)),
+                        estateAgentIDLoggedIn
+                );
+                newE.save();
+                fx2RefreshTable();
+            }
+        }
+        else{
+            System.out.println("NEED TO LOG IN.");
+        }
     }
 
 

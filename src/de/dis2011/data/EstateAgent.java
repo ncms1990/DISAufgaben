@@ -185,7 +185,10 @@ public class EstateAgent {
 	    return ea;
     }
 
-    public static boolean checkingEstateAgentUsernamePassword(String username, String password){
+    /*
+    @return id of estateAgent if exists, -1 otherwise.
+     */
+    public static int checkingEstateAgentUsernamePassword(String username, String password){
 		try {
 			// Hole Verbindung
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
@@ -200,16 +203,25 @@ public class EstateAgent {
 			ResultSet rs = pstmt.executeQuery();
 
 			boolean loggedIn = rs.next();
+			int estateAgentID;
+			if (loggedIn){
+				//rs.previous();
+				estateAgentID = rs.getInt("id");
+				System.out.println(estateAgentID);
+			}
+			else{
+				estateAgentID = -1;
+			}
 
 			//Close all the things!
 			rs.close();
 			pstmt.close();
-			return loggedIn;
+			return estateAgentID;
 		}
 		catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-		return false;
+		return -1;
 
 	}
 

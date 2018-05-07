@@ -17,7 +17,7 @@ public class Estate {
     private SimpleStringProperty street = new SimpleStringProperty("");
     private SimpleIntegerProperty streetNumber = new SimpleIntegerProperty(0);
     private SimpleDoubleProperty squareArea = new SimpleDoubleProperty(0);
-    private SimpleIntegerProperty estateAgentID = new SimpleIntegerProperty(-1);
+    private int estateAgentID = -1;
 
 
     public int getId() {
@@ -89,15 +89,11 @@ public class Estate {
     }
 
     public int getEstateAgentID() {
-        return estateAgentID.get();
-    }
-
-    public SimpleIntegerProperty estateAgentIDProperty() {
         return estateAgentID;
     }
 
     public void setEstateAgentID(int estateAgentID) {
-        this.estateAgentID.set(estateAgentID);
+        this.estateAgentID=estateAgentID;
     }
 
     public static Estate createEstate(int id, String city, String postalCode, String street,
@@ -113,14 +109,27 @@ public class Estate {
         return e;
     }
 
+    public static Estate createEstate(String city, String postalCode, String street,
+                                      int streetNum, double squareArea, int foreignID){
+        Estate e = new Estate();
+        e.setCity(city);
+        e.setPostalCode(postalCode);
+        e.setStreet(street);
+        e.setStreetNumber(streetNum);
+        e.setSquareArea(squareArea);
+        e.setEstateAgentID(foreignID);
+        return e;
+    }
 
-    public static void getEstates(List<Estate> es){
+
+    public static void getEstates(List<Estate> es, int estateAgentID){
         try {
             // Hole Verbindung
             Connection con = DB2ConnectionManager.getInstance().getConnection();
 
             // Erzeuge Anfrage
-            String selectSQL = "SELECT * FROM " + tableName;
+            String selectSQL = "SELECT * FROM " + tableName + " WHERE estate_agent_id="
+                    + String.valueOf(estateAgentID);
             PreparedStatement pstmt = con.prepareStatement(selectSQL);
 
             // Führe Anfrage aus
@@ -181,16 +190,23 @@ public class Estate {
             if (getId() == -1) {
                 // Achtung, hier wird noch ein Parameter mitgegeben,
                 // damit spC$ter generierte IDs zurC<ckgeliefert werden!
-                String insertSQL = "INSERT INTO  " + tableName + "(city, postal_code, street, street_number, square_area, ) VALUES (?, ?, ?, ?)";
+                String insertSQL = "INSERT INTO  " + tableName +
+                        "(city, postal_code, street, street_number, square_area, estate_agent_id)" +
+                        " VALUES (?, ?, ?, ?, ? ,?)";
+
+                System.out.println(insertSQL);
 
                 PreparedStatement pstmt = con.prepareStatement(insertSQL,
                         Statement.RETURN_GENERATED_KEYS);
 
                 // Setze Anfrageparameter und fC<hre Anfrage aus
-                pstmt.setString(1, getName());
-                pstmt.setString(2, getAddress());
-                pstmt.setString(3, getLogin());
-                pstmt.setString(4, getPassword());
+                pstmt.setString(1, getCity());
+                pstmt.setString(2, getPostalCode());
+                pstmt.setString(3, getStreet());
+                pstmt.setInt(4, getStreetNumber());
+                pstmt.setDouble(5, getSquareArea());
+                pstmt.setInt(6, getEstateAgentID());
+
                 pstmt.executeUpdate();
 
                 // Hole die Id des engefC<gten Datensatzes
@@ -203,15 +219,20 @@ public class Estate {
                 pstmt.close();
             } else {
                 // Falls schon eine ID vorhanden ist, mache ein Update...
-                String updateSQL = "UPDATE " + tableName + " SET name = ?, address = ?, login = ?, password = ? WHERE id = ?";
+                String updateSQL = "UPDATE " + tableName +
+                        " SET city = ?, postal_code = ?, street = ?, street_number = ? ,"+
+                        "square_area = ? , estate_agent_id = ?" +
+                        " WHERE id = ?";
                 PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
                 // Setze Anfrage Parameter
-                pstmt.setString(1, getName());
-                pstmt.setString(2, getAddress());
-                pstmt.setString(3, getLogin());
-                pstmt.setString(4, getPassword());
-                pstmt.setInt(5, getId());
+                pstmt.setString(1, getCity());
+                pstmt.setString(2, getPostalCode());
+                pstmt.setString(3, getStreet());
+                pstmt.setInt(4, getStreetNumber());
+                pstmt.setDouble(5, getSquareArea());
+                pstmt.setInt(6, getEstateAgentID());
+                pstmt.setInt(7, getId());
                 pstmt.executeUpdate();
 
                 pstmt.close();
