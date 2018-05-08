@@ -52,4 +52,17 @@ public class Person {
     public void setAddress(String address) {
         this.address.set(address);
     }
+
+    public static Person createPerson(String firstN, String name, String address){
+        Person p = new Person();
+        p.setFirstName(firstN);
+        p.setName(name);
+        p.setAddress(address);
+        return p;
+    }
+
+    @Override
+    public String toString(){
+        return getName() + ", " + getFirstName() + ", " + getAddress();
+    }
 }

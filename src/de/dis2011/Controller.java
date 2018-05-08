@@ -1,14 +1,18 @@
 package de.dis2011;
 
+import de.dis2011.data.Contract;
 import de.dis2011.data.Estate;
 import de.dis2011.data.EstateAgent;
+import de.dis2011.data.Person;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +77,13 @@ public class Controller {
     ATTRIBUTES FOR CONTRACT MANAGEMENT
      */
 
+    @FXML
+    ListView<Person> fx3PersonsList;
+
+    @FXML
+    ListView<String> fx3ContractsList;
+
+
     /*
     METHODS FOR MANAGEMENT MODE FOR ESTATE AGENTS
      */
@@ -92,7 +103,27 @@ public class Controller {
         fx2Street.setCellValueFactory(new PropertyValueFactory<Estate, String>("street"));
         fx2StreetNum.setCellValueFactory(new PropertyValueFactory<Estate, String>("streetNumber"));
         fx2SquareArea.setCellValueFactory(new PropertyValueFactory<Estate, String>("squareArea"));
+        //INITIALIZE FOR CONTRACT MANAGEMENT MODE
+        ObservableList data =
+                FXCollections.observableArrayList();
 
+        Person p1 = Person.createPerson("Al","Bundy","mofo");
+        Person p2 = Person.createPerson("Chavo","Chespirito","Barril numero 8");
+        Person p3 = Person.createPerson("Don Ramon","Ximenes","Apt 73");
+
+
+        data.add(p1);
+        data.add(p2);
+        data.add(p3);
+
+//        for (int i = 0; i < 18; i++) {
+//            data.add("anonym");
+//        }
+
+        fx3PersonsList.setItems(data);
+
+
+        //fx3PersonsList.setCellFactory(ComboBoxListCell.forListView(names));
 
     }
 
@@ -277,5 +308,15 @@ public class Controller {
     /*
     METHODS FOR CONTRACT MANAGEMENT
      */
+
+    public void fx3AddPerson(ActionEvent actionEvent){
+
+
+    }
+
+    public void fx3SignContract(ActionEvent actionEvent){
+
+
+    }
 
 }
