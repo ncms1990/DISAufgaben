@@ -11,14 +11,51 @@ public class Estate {
 
     private static String tableName = "estate";
 
-    private int id = -1;
-    private SimpleStringProperty city = new SimpleStringProperty("");
-    private SimpleStringProperty postalCode = new SimpleStringProperty("");
-    private SimpleStringProperty street = new SimpleStringProperty("");
-    private SimpleIntegerProperty streetNumber = new SimpleIntegerProperty(0);
-    private SimpleDoubleProperty squareArea = new SimpleDoubleProperty(0);
-    private int estateAgentID = -1;
+    private String city;
+    private String postalCode;
+    private String street;
+    private int streetNumber;
+    private Double squareArea;
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public int getStreetNumber() {
+        return streetNumber;
+    }
+
+    public void setStreetNumber(int streetNumber) {
+        this.streetNumber = streetNumber;
+    }
+
+    public Double getSquareArea() {
+        return squareArea;
+    }
+
+    public void setSquareArea(Double squareArea) {
+        this.squareArea = squareArea;
+    }
 
     public int getId() {
         return id;
@@ -28,73 +65,17 @@ public class Estate {
         this.id = id;
     }
 
-    public String getCity() {
-        return city.get();
-    }
-
-    public SimpleStringProperty cityProperty() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city.set(city);
-    }
-
-    public String getPostalCode() {
-        return postalCode.get();
-    }
-
-    public SimpleStringProperty postalCodeProperty() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode.set(postalCode);
-    }
-
-    public String getStreet() {
-        return street.get();
-    }
-
-    public SimpleStringProperty streetProperty() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street.set(street);
-    }
-
-    public int getStreetNumber() {
-        return streetNumber.get();
-    }
-
-    public SimpleIntegerProperty streetNumberProperty() {
-        return streetNumber;
-    }
-
-    public void setStreetNumber(int streetNumber) {
-        this.streetNumber.set(streetNumber);
-    }
-
-    public double getSquareArea() {
-        return squareArea.get();
-    }
-
-    public SimpleDoubleProperty squareAreaProperty() {
-        return squareArea;
-    }
-
-    public void setSquareArea(double squareArea) {
-        this.squareArea.set(squareArea);
-    }
-
     public int getEstateAgentID() {
         return estateAgentID;
     }
 
     public void setEstateAgentID(int estateAgentID) {
-        this.estateAgentID=estateAgentID;
+        this.estateAgentID = estateAgentID;
     }
+
+    private int id = -1;
+    private int estateAgentID = -1;
+
 
     public static Estate createEstate(int id, String city, String postalCode, String street,
                                       int streetNum, double squareArea, int foreignID){
@@ -108,6 +89,16 @@ public class Estate {
         e.setEstateAgentID(foreignID);
         return e;
     }
+
+    /*
+    Creates Estate from input that is only Strings.
+     */
+    public static Estate createEstateStringInput(String city, String postalCode, String street, String streetNum,
+                                                 String squareArea, String foreignID) {
+        return Estate.createEstate(city, postalCode, street,
+                Integer.parseInt(streetNum), Double.parseDouble(squareArea), Integer.parseInt(foreignID));
+    }
+
 
     public static Estate createEstate(String city, String postalCode, String street,
                                       int streetNum, double squareArea, int foreignID){
@@ -240,5 +231,10 @@ public class Estate {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String toString(){
+        return getCity() + ", " + getPostalCode() +", " + getStreet() + ", " + getStreetNumber();
     }
 }

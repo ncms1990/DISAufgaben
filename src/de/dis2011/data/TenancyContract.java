@@ -6,9 +6,9 @@ import javafx.beans.property.SimpleStringProperty;
 public class TenancyContract extends Contract {
 
     private int contractNumber = -1;
-    private SimpleStringProperty startDate = new SimpleStringProperty("");
-    private SimpleStringProperty duration = new SimpleStringProperty("");
-    private SimpleDoubleProperty additionalCost = new SimpleDoubleProperty(0);
+    private String startDate;
+    private String duration;
+    private Double additionalCost;
     private int apartmentID = -1;
 
     @Override
@@ -22,39 +22,27 @@ public class TenancyContract extends Contract {
     }
 
     public String getStartDate() {
-        return startDate.get();
-    }
-
-    public SimpleStringProperty startDateProperty() {
         return startDate;
     }
 
     public void setStartDate(String startDate) {
-        this.startDate.set(startDate);
+        this.startDate = startDate;
     }
 
     public String getDuration() {
-        return duration.get();
-    }
-
-    public SimpleStringProperty durationProperty() {
         return duration;
     }
 
     public void setDuration(String duration) {
-        this.duration.set(duration);
+        this.duration = duration;
     }
 
-    public double getAdditionalCost() {
-        return additionalCost.get();
-    }
-
-    public SimpleDoubleProperty additionalCostProperty() {
+    public Double getAdditionalCost() {
         return additionalCost;
     }
 
-    public void setAdditionalCost(double additionalCost) {
-        this.additionalCost.set(additionalCost);
+    public void setAdditionalCost(Double additionalCost) {
+        this.additionalCost = additionalCost;
     }
 
     public int getApartmentID() {
@@ -63,5 +51,10 @@ public class TenancyContract extends Contract {
 
     public void setApartmentID(int apartmentID) {
         this.apartmentID = apartmentID;
+    }
+
+    @Override
+    public String toString(){
+        return "Tenacy: " + super.toString();
     }
 }

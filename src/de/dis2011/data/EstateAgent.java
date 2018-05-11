@@ -27,52 +27,52 @@ import javafx.beans.property.SimpleStringProperty;
 public class EstateAgent {
 	private static String tableName = "estate_agent";
 
+
+	private String name;
+	private String address;
+	private String login;
+	private String password;
+
 	private int id = -1;
-	private SimpleStringProperty name = new SimpleStringProperty("");
-	private SimpleStringProperty address = new SimpleStringProperty("");
-	private SimpleStringProperty login = new SimpleStringProperty("");
-	private SimpleStringProperty password = new SimpleStringProperty("");
 
-
-    public int getId() {
+	public int getId() {
 		return id;
 	}
-	
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getName() {
-		return name.get();
-	}
-	
-	public void setName(String name) {
-		this.name.set(name);
+		return name;
 	}
 
-	
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getAddress() {
-		return address.get();
+		return address;
 	}
-	
+
 	public void setAddress(String address) {
-		this.address.set(address);
+		this.address = address;
 	}
-	
+
 	public String getLogin() {
-		return login.get();
+		return login;
 	}
-	
+
 	public void setLogin(String login) {
-		this.login.set(login);
+		this.login = login;
 	}
-	
+
 	public String getPassword() {
-		return password.get();
+		return password;
 	}
-	
+
 	public void setPassword(String password) {
-		this.password.set(password);
+		this.password = password;
 	}
 	
 	/**
@@ -273,5 +273,10 @@ public class EstateAgent {
         catch (SQLException e1) {
             e1.printStackTrace();
         }
+    }
+
+    @Override
+    public String toString(){
+        return getName() + ", " + getAddress() + ", " + getLogin() ;
     }
 }

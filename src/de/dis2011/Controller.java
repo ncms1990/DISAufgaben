@@ -1,9 +1,6 @@
 package de.dis2011;
 
-import de.dis2011.data.Contract;
-import de.dis2011.data.Estate;
-import de.dis2011.data.EstateAgent;
-import de.dis2011.data.Person;
+import de.dis2011.data.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -34,17 +31,7 @@ public class Controller {
     TextField fxAgentLogin;
 
     @FXML
-    TableView<EstateAgent> fxEstateAgentsAccounts;
-
-    @FXML
-    TableColumn fxColName;
-    @FXML
-    TableColumn fxColAddress;
-    @FXML
-    TableColumn fxColUsername;
-    @FXML
-    TableColumn fxColPassword;
-
+    ListView<EstateAgent> fx1EstateAgents;
 
     /*
     ATTRIBUTES FOR MANAGEMENT MODE FOR ESTATE
@@ -57,18 +44,7 @@ public class Controller {
     TextField fx2AgentPassword;
 
     @FXML
-    TableView<Estate> fx2Estates;
-
-    @FXML
-    TableColumn fx2City;
-    @FXML
-    TableColumn fx2PostalCode;
-    @FXML
-    TableColumn fx2Street;
-    @FXML
-    TableColumn fx2StreetNum;
-    @FXML
-    TableColumn fx2SquareArea;
+    ListView<Estate> fx2Estates;
 
     private int estateAgentIDLoggedIn = -1;
 
@@ -92,17 +68,6 @@ public class Controller {
     @FXML
     public void initialize(){
         fxAgentUserName.setText("See DB2ConnectionManager.");
-        //Table Column Cells factory for Estate agents management
-        fxColName.setCellValueFactory(new PropertyValueFactory<EstateAgent, String>("name"));
-        fxColAddress.setCellValueFactory(new PropertyValueFactory<EstateAgent, String>("address"));
-        fxColUsername.setCellValueFactory(new PropertyValueFactory<EstateAgent, String>("login"));
-        fxColPassword.setCellValueFactory(new PropertyValueFactory<EstateAgent, String>("password"));
-        //INITIALIZE FOR MANAGEMENTE MODE FOR ESTATES
-        fx2City.setCellValueFactory(new PropertyValueFactory<Estate, String>("city"));
-        fx2PostalCode.setCellValueFactory(new PropertyValueFactory<Estate, String>("postalCode"));
-        fx2Street.setCellValueFactory(new PropertyValueFactory<Estate, String>("street"));
-        fx2StreetNum.setCellValueFactory(new PropertyValueFactory<Estate, String>("streetNumber"));
-        fx2SquareArea.setCellValueFactory(new PropertyValueFactory<Estate, String>("squareArea"));
         //INITIALIZE FOR CONTRACT MANAGEMENT MODE
         ObservableList data =
                 FXCollections.observableArrayList();
@@ -122,7 +87,6 @@ public class Controller {
 
         fx3PersonsList.setItems(data);
 
-
         //fx3PersonsList.setCellFactory(ComboBoxListCell.forListView(names));
 
     }
@@ -133,7 +97,8 @@ public class Controller {
 
 
     public void fxLoginUsername(ActionEvent actionEvent) {
-        System.out.println("HELLO THERE! You typed:" + fxAgentUserName.getText() + " and " + fxAgentLogin.getText());
+        System.out.println("HELLO THERE! You typed:" + fxAgentUserName.getText() +
+                " and " + fxAgentLogin.getText());
     }
 
 
@@ -141,18 +106,18 @@ public class Controller {
         fx1RefreshTable();
     }
 
-    public void fx1RefreshTable(){
+    private void fx1RefreshTable(){
         ObservableList<EstateAgent> accs = FXCollections.observableArrayList();
 
         EstateAgent.getEstateAgents(accs);
-        ObservableList<EstateAgent> estateAgs = fxEstateAgentsAccounts.getItems();
+        ObservableList<EstateAgent> estateAgs = fx1EstateAgents.getItems();
         estateAgs.clear();
         estateAgs.addAll(accs);
     }
 
     public void fxDeleteAcc(ActionEvent actionEvent) {
-        if (!fxEstateAgentsAccounts.getSelectionModel().isEmpty()) {
-            EstateAgent ea = fxEstateAgentsAccounts.getSelectionModel().getSelectedItem();
+        if (!fx1EstateAgents.getSelectionModel().isEmpty()) {
+            EstateAgent ea = fx1EstateAgents.getSelectionModel().getSelectedItem();
             System.out.println(ea.getId());
             EstateAgent.delete(ea);
             fx1RefreshTable();
@@ -160,7 +125,7 @@ public class Controller {
     }
 
     public void fxModifyAcc(ActionEvent actionEvent) {
-        EstateAgent ea = fxEstateAgentsAccounts.getSelectionModel().getSelectedItem();
+        EstateAgent ea = fx1EstateAgents.getSelectionModel().getSelectedItem();
         Stage pStage = getPrimaryStage();
         List<String> textFields = new ArrayList<String>(Arrays.asList("Name", "Address", "Username", "Password"));
         List<String> defaultFields =
@@ -248,7 +213,6 @@ public class Controller {
         else{
             System.out.println("NEED TO LOG IN.");
         }
-
     }
 
 
@@ -281,22 +245,50 @@ public class Controller {
 
     public void fx2AddEstate(ActionEvent actionEvent) {
         if (checkIfLogedIn()){
-            Estate estate = fx2Estates.getSelectionModel().getSelectedItem();
             Stage pStage = getPrimaryStage();
-            List<String> textFields = new ArrayList<String>(Arrays.asList("City", "Postal code",
+
+            List<String> textFieldsEstate = new ArrayList<String>(Arrays.asList("City", "Postal code",
                     "Street", "Street number", "Square area"));
-            boolean newEntry = GUITools.initWindowNewEntry(pStage, textFields, new ArrayList<Estate>());
-            if (newEntry){
-                Estate newE = Estate.createEstate(
-                        textFields.get(0),
-                        textFields.get(1),
-                        textFields.get(2),
-                        Integer.parseInt(textFields.get(3)),
-                        Double.parseDouble(textFields.get(4)),
-                        estateAgentIDLoggedIn
+            boolean newEstate = GUITools.initWindowNewEntry(pStage, textFieldsEstate, new ArrayList<Estate>());
+            if (newEstate) {
+                Estate newE = Estate.createEstateStringInput(
+                        textFieldsEstate.get(0),
+                        textFieldsEstate.get(1),
+                        textFieldsEstate.get(2),
+                        textFieldsEstate.get(3),
+                        textFieldsEstate.get(4),
+                        String.valueOf(estateAgentIDLoggedIn)
                 );
                 newE.save();
                 fx2RefreshTable();
+
+                // Is Estate Apartment or house?
+
+                List<String> buttonFields = new ArrayList<String>(Arrays.asList("Apartment", "House"));
+                int apartmentOrHouse = GUITools.initWindowTwoOptions(pStage, buttonFields);
+                switch (apartmentOrHouse) {
+                    case 0://Apartment
+                        List<String> textFieldsAptOrHouse = new ArrayList<String>(Arrays.asList("Floor", "Rents", "Rooms",
+                                "Balcony", "Built-in kitchen"));
+                        boolean newHouseOrApartment = GUITools.initWindowNewEntry(pStage, textFieldsEstate, new ArrayList<Estate>());
+                        if (newHouseOrApartment) {
+                            Apartment newA = Apartment.createApartmentStringInput(
+                                    textFieldsEstate.get(0),
+                                    textFieldsAptOrHouse.get(0),
+                                    textFieldsAptOrHouse.get(1),
+                                    textFieldsAptOrHouse.get(2),
+                                    textFieldsAptOrHouse.get(3),
+                                    textFieldsAptOrHouse.get(4)
+                            );
+                            newA.save();
+                            fx2RefreshTable();
+                        }
+                        break;
+
+                    case 1://House
+
+                        break;
+                }
             }
         }
         else{
@@ -310,6 +302,8 @@ public class Controller {
      */
 
     public void fx3AddPerson(ActionEvent actionEvent){
+        Person p = fx3PersonsList.getSelectionModel().getSelectedItem();
+        System.out.println(p.getAddress());
 
 
     }

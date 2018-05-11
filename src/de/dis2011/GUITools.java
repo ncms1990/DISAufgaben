@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -19,11 +20,67 @@ import java.util.List;
 
 public class GUITools {
 
+    public static int initWindowTwoOptions(Stage pStage, List defaultTextfields) {
+        WindowTwoOptions w = new WindowTwoOptions(pStage, defaultTextfields);
+        return w.getButtonClicked();
+    }
+
     public static boolean initWindowNewEntry(Stage pStage, List res, List defaultTextfields) {
         WindowAddNewEntry w = new WindowAddNewEntry(pStage, res, defaultTextfields);
         return w.somethingChanged();
     }
 
+
+    /*
+     * Window is a showAndWait Window. To be used with lambda expr or anony classes.
+     * */
+    static class WindowTwoOptions {
+        private static int buttonFirstClicked;
+
+        public int getButtonClicked(){
+            return buttonFirstClicked;
+        }
+        /*
+         * Note: List<String> has the labels and is used as answer if button is pressed.
+         * */
+        public WindowTwoOptions(final Stage primaryStage, List<String> buttonLabels) {
+
+            // New window (Stage)
+            Stage newWindow = new Stage();
+            HBox layout = new HBox();
+
+            List<Button> buttons = new ArrayList<Button>();
+            for (int i=0; i<buttonLabels.size(); i++) {
+                Button but = new Button(buttonLabels.get(i));
+                final int copy_i = i;
+                but.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        buttonFirstClicked = copy_i;
+                        newWindow.close();
+                    }
+                });
+                buttons.add(but);
+                layout.getChildren().add(but);
+            }
+
+            Scene scene = new Scene(layout, 230 * buttonLabels.size(), 50 );
+
+            newWindow.setTitle("Choose between two options");
+            newWindow.setScene(scene);
+
+            // Specifies the modality for new window.
+            newWindow.initModality(Modality.WINDOW_MODAL);
+            // Specifies the owner Window (parent) for new window
+            newWindow.initOwner(primaryStage);
+
+            // Set position of second window, related to primary window.
+            newWindow.setX(primaryStage.getX() + 200);
+            newWindow.setY(primaryStage.getY() + 100);
+
+            newWindow.showAndWait();
+        }
+    }
 
     /*
      * Window is a showAndWait Window. To be used with lambda expr or anony classes.
@@ -77,7 +134,7 @@ public class GUITools {
             }
             layout.getChildren().add(but);
 
-            Scene scene = new Scene(layout, 230, 100 * responses.size());
+            Scene scene = new Scene(layout, 230, 50 * responses.size());
 
             newWindow.setTitle("Modify");
             newWindow.setScene(scene);

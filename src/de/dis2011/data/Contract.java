@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 public class Contract {
 
     private int contractNumber = -1;
-    private SimpleStringProperty place = new SimpleStringProperty("");
+    private String place;
 
     public int getContractNumber() {
         return contractNumber;
@@ -16,15 +16,14 @@ public class Contract {
     }
 
     public String getPlace() {
-        return place.get();
-    }
-
-    public SimpleStringProperty placeProperty() {
         return place;
     }
 
-    public void setPlace(String place) {
-        this.place.set(place);
+    public void setPlace(String place) {  this.place = place; }
+
+    @Override
+    public String toString(){
+        return getContractNumber() + ", " + getPlace();
     }
 
 }

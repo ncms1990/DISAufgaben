@@ -7,9 +7,10 @@ import javafx.beans.property.SimpleStringProperty;
 public class House extends Estate{
 
     private int estateID = -1;
-    private SimpleIntegerProperty floors = new SimpleIntegerProperty(0);
-    private SimpleDoubleProperty price = new SimpleDoubleProperty(0);
-    private SimpleStringProperty garden = new SimpleStringProperty("");
+
+    private int floors;
+    private Double price;
+    private String garden;
     private int ownerID = -1;
 
     public int getEstateID() {
@@ -21,39 +22,27 @@ public class House extends Estate{
     }
 
     public int getFloors() {
-        return floors.get();
-    }
-
-    public SimpleIntegerProperty floorsProperty() {
         return floors;
     }
 
     public void setFloors(int floors) {
-        this.floors.set(floors);
+        this.floors = floors;
     }
 
-    public double getPrice() {
-        return price.get();
-    }
-
-    public SimpleDoubleProperty priceProperty() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price.set(price);
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public String getGarden() {
-        return garden.get();
-    }
-
-    public SimpleStringProperty gardenProperty() {
         return garden;
     }
 
     public void setGarden(String garden) {
-        this.garden.set(garden);
+        this.garden = garden;
     }
 
     public int getOwnerID() {
@@ -63,4 +52,10 @@ public class House extends Estate{
     public void setOwnerID(int ownerID) {
         this.ownerID = ownerID;
     }
+
+    @Override
+    public String toString(){
+        return "House: " + super.toString();
+    }
+
 }

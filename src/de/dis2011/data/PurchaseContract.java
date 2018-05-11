@@ -6,8 +6,8 @@ import javafx.beans.property.SimpleIntegerProperty;
 public class PurchaseContract extends Contract{
 
     private int contractNumber = -1;
-    private SimpleIntegerProperty numberOfInstallments = new SimpleIntegerProperty(-1);
-    private SimpleDoubleProperty interestRate = new SimpleDoubleProperty(-1);
+    private int numberOfInstallments;
+    private Double interestRate;
     private int houseID = -1;
 
     @Override
@@ -21,27 +21,19 @@ public class PurchaseContract extends Contract{
     }
 
     public int getNumberOfInstallments() {
-        return numberOfInstallments.get();
-    }
-
-    public SimpleIntegerProperty numberOfInstallmentsProperty() {
         return numberOfInstallments;
     }
 
     public void setNumberOfInstallments(int numberOfInstallments) {
-        this.numberOfInstallments.set(numberOfInstallments);
+        this.numberOfInstallments = numberOfInstallments;
     }
 
-    public double getInterestRate() {
-        return interestRate.get();
-    }
-
-    public SimpleDoubleProperty interestRateProperty() {
+    public Double getInterestRate() {
         return interestRate;
     }
 
-    public void setInterestRate(double interestRate) {
-        this.interestRate.set(interestRate);
+    public void setInterestRate(Double interestRate) {
+        this.interestRate = interestRate;
     }
 
     public int getHouseID() {
@@ -50,5 +42,10 @@ public class PurchaseContract extends Contract{
 
     public void setHouseID(int houseID) {
         this.houseID = houseID;
+    }
+
+    @Override
+    public String toString(){
+        return "Purchase: " + super.toString();
     }
 }

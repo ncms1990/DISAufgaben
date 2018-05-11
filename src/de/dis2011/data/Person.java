@@ -5,9 +5,9 @@ import javafx.beans.property.SimpleStringProperty;
 public class Person {
 
     private int estateID = -1;
-    private SimpleStringProperty firstName = new SimpleStringProperty("");
-    private SimpleStringProperty name = new SimpleStringProperty("");
-    private SimpleStringProperty address = new SimpleStringProperty("");
+    private String firstName;
+    private String name;
+    private String address;
 
     public int getEstateID() {
         return estateID;
@@ -18,39 +18,27 @@ public class Person {
     }
 
     public String getFirstName() {
-        return firstName.get();
-    }
-
-    public SimpleStringProperty firstNameProperty() {
         return firstName;
     }
 
     public void setFirstName(String firstName) {
-        this.firstName.set(firstName);
+        this.firstName = firstName;
     }
 
     public String getName() {
-        return name.get();
-    }
-
-    public SimpleStringProperty nameProperty() {
         return name;
     }
 
     public void setName(String name) {
-        this.name.set(name);
+        this.name = name;
     }
 
     public String getAddress() {
-        return address.get();
-    }
-
-    public SimpleStringProperty addressProperty() {
         return address;
     }
 
     public void setAddress(String address) {
-        this.address.set(address);
+        this.address = address;
     }
 
     public static Person createPerson(String firstN, String name, String address){
